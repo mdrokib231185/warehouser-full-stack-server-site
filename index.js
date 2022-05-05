@@ -22,6 +22,14 @@ async function run() {
       await client.connect()
       try {
             const productCollection = client.db("assignment-11").collection("products") 
+
+            app.post('/product', async (req, res) => {
+                  const newProduct = req.body
+                  const result = await productCollection.insertOne(newProduct)
+                res.send(result)  
+            })
+
+
             app.get('/products', async (req, res) => {
                   const query = {}
                   const cursor = productCollection.find(query)
