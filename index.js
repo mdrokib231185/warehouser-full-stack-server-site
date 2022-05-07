@@ -1,6 +1,6 @@
 const express = require('express')
 const cors = require('cors')
-const { MongoClient, ServerApiVersion } = require("mongodb");
+const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 require('dotenv').config()
 const port = process.env.PORT || 5000
 const app = express()
@@ -23,10 +23,25 @@ async function run() {
       try {
             const productCollection = client.db("assignment-11").collection("products") 
 
-            app.post('/product', async (req, res) => {
+            app.post('/products', async (req, res) => {
                   const newProduct = req.body
                   const result = await productCollection.insertOne(newProduct)
                 res.send(result)  
+            })
+            // delete
+
+            app.delete("/products/:id", async (req, res) => {
+                  const id = req.params.id
+                  const query = {_id: ObjectId(id) }
+                  const result = await productCollection.deleteOne(query)
+                  res.send(result)
+            })
+            // finde one
+            app.get('/products/:id', async (req, res) => {
+                  const id = req.params.id
+                  const query = { _id: ObjectId(id) }
+                  const products = await productCollection.findOne(query)
+                  res.send(products)
             })
 
 
