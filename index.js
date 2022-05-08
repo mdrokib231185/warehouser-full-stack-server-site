@@ -43,13 +43,32 @@ async function run() {
                   const products = await productCollection.findOne(query)
                   res.send(products)
             })
+            // update 
+            app.put("/products/:id", async (req, res) => {
+              const id = req.params.id;
+              const updatedInventory = req.body;
+              const filter = {_id: ObjectId(id) };
+              const options = { upsert: true };
+              const updateDoc = {
+                $set: {
+                  quantity: updatedInventory.quantity,
+                },
+              };
+
+              const result = await productCollection.updateOne(
+                filter,
+                updateDoc,
+                options
+              );
+              res.send(result);
+            });
 
 
             app.get('/products', async (req, res) => {
                   const query = {}
                   const cursor = productCollection.find(query)
-                  const services = await cursor.toArray()  
-                  res.send(services)
+                  const products = await cursor.toArray()  
+                  res.send(products);
                   
             })  
       }
